@@ -1,0 +1,37 @@
+name: Delete guestbook files after 24 hours
+
+on:
+  schedule:
+    - cron: "17 * * * *" # every hour, at 17 minutes past
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only list what would be deleted"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudinary-cleanup
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Delete files older than 24 hours
+        run: node scripts/cleanup.mjs
+        env:
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          GUESTBOOK_TAG: ${{ vars.GUESTBOOK_TAG }}
+          MAX_AGE_HOURS: ${{ vars.MAX_AGE_HOURS }}
+          DRY_RUN: ${{ inputs.dry_run }}
