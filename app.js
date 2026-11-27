@@ -642,6 +642,7 @@
     $('#statQueueLabel').textContent = failed ? 'waiting · ' + failed + ' could not upload' : 'waiting to upload';
     $('#statQueueBox').classList.toggle('warn', items.length > 0);
     $('#statNet').textContent = navigator.onLine ? 'Online' : 'Offline';
+    $('#statNetIcon').setAttribute('href', navigator.onLine ? '#i-cloud' : '#i-wifioff'); $('#statNetBox').classList.toggle('warn', !navigator.onLine);
     if (navigator.storage && navigator.storage.estimate) {
       const est = await navigator.storage.estimate(); const free = Math.max(0, (est.quota || 0) - (est.usage || 0));
       const q = QUALITY[S.quality] || QUALITY.standard; const minutes = free / ((q.vbps + 128000) / 8 * 60);
@@ -720,6 +721,7 @@
     if (REMOTE) $('#remoteQrCard').hidden = true;
     else { const u = new URL(location.href); u.search = '?remote=1'; u.hash = ''; qrInto($('#remoteQr'), u.toString()); }
     show('welcome');
+    listDevices().catch(() => {});
     U.kick();
     // Kiosk: warm up the camera straight away if access was already allowed on this device.
     if (S.kiosk && !REMOTE && navigator.permissions && navigator.permissions.query) {

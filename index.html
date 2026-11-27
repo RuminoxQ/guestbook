@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FBF6F0">
 <title>Guestbook</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M12 20c-5-4-8-6.6-8-10a4.2 4.2 0 0 1 8-1.8A4.2 4.2 0 0 1 20 10c0 3.4-3 6-8 10z%22 fill=%22%23A8473C%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -94,7 +95,7 @@
   <section class="panel" aria-label="Controls">
     <div class="panel-inner">
       <div class="toprow">
-        <ol class="steps" id="steps" aria-label="Steps"><li><span>1</span>Choose</li><li><span>2</span>Record</li><li><span>3</span>Save</li></ol>
+        <ol class="steps" id="steps" aria-label="Steps"><li><span>1</span><b>Choose</b></li><li><span>2</span><b>Record</b></li><li><span>3</span><b>Save</b></li></ol>
         <div class="iconbtns" data-show="welcome setup photo">
           <button type="button" class="iconbtn" id="bigBtn" aria-pressed="false" aria-label="Larger text and high contrast"><svg width="20" height="20"><use href="#i-text"/></svg></button>
           <button type="button" class="iconbtn" id="voiceBtn" aria-pressed="false" aria-label="Voice guide"><svg width="20" height="20"><use href="#i-speaker"/></svg></button>
@@ -240,7 +241,7 @@
       <div class="stat"><div class="ic"><svg width="22" height="22"><use href="#i-heart"/></svg></div><div><b id="statToday">0</b><span>messages on this device today</span></div></div>
       <div class="stat" id="statQueueBox"><div class="ic"><svg width="22" height="22"><use href="#i-up"/></svg></div><div><b id="statQueue">0</b><span id="statQueueLabel">waiting to upload</span></div></div>
       <div class="stat" id="statStoreBox"><div class="ic"><svg width="22" height="22"><use href="#i-cloud"/></svg></div><div><b id="statStore">–</b><span id="statStoreLabel">free on this device</span></div></div>
-      <div class="stat"><div class="ic"><svg width="22" height="22"><use href="#i-wifioff"/></svg></div><div><b id="statNet">–</b><span>internet connection</span></div></div>
+      <div class="stat" id="statNetBox"><div class="ic"><svg width="22" height="22"><use id="statNetIcon" href="#i-wifioff"/></svg></div><div><b id="statNet">–</b><span>internet connection</span></div></div>
     </div>
     <div class="notice warn" id="lowStorage" hidden><svg width="18" height="18"><use href="#i-alert"/></svg>Storage is running low on this device. Switch to Saver quality and make sure waiting messages upload.</div>
     <div class="notice dark"><svg width="18" height="18" style="color:var(--gold)"><use href="#i-clock"/></svg>Uploaded messages are deleted automatically 24 hours after upload. Download them from the host gallery to keep them.</div>

@@ -40,6 +40,8 @@ body.big { --panel-w: 500px; }
   .hero h2 { font-size: calc(44px * var(--fs)) !important; }
   .title { font-size: calc(32px * var(--fs)) !important; }
   .countdown { font-size: 140px !important; }
+  .steps li:not(.on) b { display: none; }
+  .steps li:not(.on) { padding: 0 4px; }
   .final-num { font-size: 72px !important; }
 }
 
@@ -85,6 +87,7 @@ body.big { --panel-w: 500px; }
 .steps li.on { background: #fff; color: var(--ink); }
 .steps li.on span, .steps li.done span { background: var(--accent); color: #fff; }
 .steps li.done { color: var(--ink); }
+.steps li b { font-weight: 600; }
 .toprow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .iconbtns { display: flex; gap: 8px; }
 .iconbtn { width: 44px; height: 44px; flex: 0 0 auto; border-radius: 50%; border: 1px solid var(--line2); background: #fff; color: var(--ink); display: flex; align-items: center; justify-content: center; padding: 0; }
