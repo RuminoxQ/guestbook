@@ -30,10 +30,10 @@
       const kind = ctx.kind || (x.rt === 'image' ? 'photo' : (x.width ? 'video' : 'audio'));
       return {
         id: x.public_id, rt: x.rt, format: x.format, kind, guest: ctx.guest || '', duration: ctx.duration || '', consent: ctx.consent_share === 'yes',
-        created: Date.parse(x.created_at), bytes: x.bytes || 0,
+        created: Date.parse(x.created_at), bytes: x.bytes || 0, w: x.width || 0,
         url: 'https://res.cloudinary.com/' + C.cloudName + '/' + x.rt + '/upload/v' + x.version + '/' + x.public_id + '.' + x.format,
       };
-    }).filter((x) => x.kind !== 'check' && !x.id.startsWith('device-check-'));
+    }).filter((x) => x.kind !== 'check' && !x.id.startsWith('device-check-') && !(x.rt === 'image' && x.w <= 1));
     render();
   }
 

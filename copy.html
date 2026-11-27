@@ -66,7 +66,7 @@
     else { el = document.createElement('video'); el.controls = true; el.playsInline = true; el.className = 'playback'; }
     el.src = src; stage.appendChild(el);
     $('#dl').disabled = false;
-    $('#meta').textContent = ext.toUpperCase() + ' · ' + (blob.size > 1048576 ? (blob.size / 1048576).toFixed(1) + ' MB' : Math.round(blob.size / 1024) + ' KB');
+    $('#meta').textContent = ext.toUpperCase() + ' · ' + (blob.size > 1048576 ? (blob.size / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(blob.size / 1024)) + ' KB');
     $('#dl').onclick = async () => {
       const fname = 'guestbook-' + (name || 'message').replace(/[^\w-]+/g, '-') + '.' + ext;
       const file = new File([blob], fname, { type: blob.type });
