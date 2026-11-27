@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Host gallery · Guestbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
+<script src="vendor/jszip.min.js" defer></script>
+</head>
+<body class="page">
+<div class="gate" id="gate">
+  <form class="pin-card" id="gateForm" style="width:420px">
+    <div class="heart-dot" style="background:var(--blush);color:var(--accent);width:56px;height:56px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+    <h2>Host gallery</h2>
+    <p class="small" style="font-size:15px;text-align:center">Enter the gallery code to see your guests’ messages.</p>
+    <label class="field" style="width:100%">Gallery code<input type="password" id="code" autocomplete="off" autocapitalize="off" spellcheck="false" required></label>
+    <button class="btn" type="submit" style="width:100%">Open gallery</button>
+    <p class="small" id="gateMsg" role="alert" style="text-align:center"></p>
+  </form>
+</div>
+
+<div class="wrap" id="main" hidden>
+  <header class="head">
+    <div>
+      <p class="eyebrow"><span id="eventName"></span> · Guestbook</p>
+      <h1 class="title">Host <em>gallery</em></h1>
+      <p class="small" id="counts" style="font-size:15px;margin-top:8px"></p>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn sm" id="zipBtn">Download all (.zip)</button>
+      <button type="button" class="btn secondary sm" id="refreshBtn">Refresh</button>
+      <button type="button" class="btn secondary sm" id="lockBtn">Lock</button>
+    </div>
+  </header>
+  <div class="notice dark" role="note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M10 2h4"/></svg><span style="flex:1 1 320px">Messages are deleted automatically 24 hours after upload. Download all to keep a copy.</span><span id="oldest" style="color:var(--gold);font-size:13px"></span></div>
+  <p class="small">New messages can take up to a minute to appear. Messages still waiting on a kiosk with no Wi-Fi appear once it reconnects.</p>
+  <div class="notice ok" id="zipMsg" role="status" hidden></div>
+  <div class="toolbar">
+    <div class="filters" role="group" aria-label="Filter by type" id="filters"></div>
+    <div class="spacer"></div>
+    <input class="search" type="search" id="search" placeholder="Search by name" aria-label="Search by guest name">
+    <select class="search" id="sort" aria-label="Sort" style="flex:0 0 auto"><option value="new">Newest first</option><option value="old">Oldest first</option></select>
+  </div>
+  <div class="gallery-grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>No messages yet.</div>
+</div>
+<script src="gallery.js"></script>
+</body>
+</html>

@@ -3,161 +3,312 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Guestbook · camera &amp; microphone test</title>
+<meta name="theme-color" content="#FBF6F0">
+<title>Guestbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root { --ink:#2B2220; --cream:#FBF6F0; --blush:#F4DED6; --muted:#6E5A54; --line:#E4D6CC; --rose:#A8473C; --ok:#3F7A57; --okbg:#E4EFE6; --warn:#A35A12; --warnbg:#FBEBD7; }
-  * { box-sizing: border-box; }
-  body { margin: 0; min-height: 100vh; background: var(--cream); color: var(--ink); font-family: 'DM Sans', system-ui, sans-serif; }
-  main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 48px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
-  .frame { flex: 1 1 520px; min-width: 0; background: #fff; border-radius: 10px; padding: 14px 14px 0; box-shadow: 0 24px 60px rgba(90,50,40,.14), 0 2px 6px rgba(90,50,40,.08); }
-  .stage { position: relative; aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; background: var(--ink); display: flex; align-items: center; justify-content: center; }
-  .stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-  .stage p { color: #E9D9D1; margin: 0; padding: 24px; text-align: center; font-size: 16px; }
-  .caption { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px; }
-  .caption em { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 24px; }
-  .caption span { font-size: 13px; color: var(--muted); }
-  aside { flex: 1 1 360px; display: flex; flex-direction: column; gap: 18px; }
-  .eyebrow { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--rose); }
-  h1 { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: clamp(36px, 5vw, 50px); line-height: 1.02; }
-  .lead { margin: 0; font-size: 16px; line-height: 1.55; color: var(--muted); }
-  button { font: 600 16px 'DM Sans', sans-serif; cursor: pointer; }
-  .primary { height: 58px; border: 0; border-radius: 29px; background: var(--rose); color: #fff; box-shadow: 0 10px 24px rgba(168,71,60,.22); }
-  .primary:disabled { opacity: .5; cursor: default; }
-  label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
-  select { height: 48px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font: 500 15px 'DM Sans', sans-serif; }
-  .meter { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; height: 12px; }
-  .meter span { border-radius: 6px; background: #EADBD1; }
-  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  li { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
-  li b { display: block; font-size: 15px; }
-  li small { display: block; font-size: 13px; line-height: 1.4; color: var(--muted); }
-  .dot { width: 36px; height: 36px; flex: 0 0 auto; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; background: #F1E6DD; color: var(--muted); }
-  .dot.ok { background: var(--okbg); color: var(--ok); }
-  .dot.warn { background: var(--warnbg); color: var(--warn); }
-  .note { font-size: 13px; line-height: 1.5; color: var(--muted); margin: 0; }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
+<script src="vendor/qrcode.js"></script>
 </head>
 <body>
-<main>
-  <div class="frame">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l5-3v10l-5-3"/><rect x="3" y="6" width="12" height="12" rx="2.5"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-5-4-8-6.6-8-10a4.2 4.2 0 0 1 8-1.8A4.2 4.2 0 0 1 20 10c0 3.4-3 6-8 10z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M10 2h4"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18l5-12 5 12M4.7 14h6.6"/><path d="M14 18l3.5-8 3.5 8M15.2 15.5h4.6"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4 1.5A3.8 3.8 0 0 1 17.5 18z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></symbol>
+    <symbol id="i-wifioff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.5a10 10 0 0 1 4-2.3M19 12.5a10 10 0 0 0-3-1.9"/><path d="M2 8.8a15 15 0 0 1 4.5-2.6M22 8.8A15 15 0 0 0 11 5"/><path d="M12 20h.01"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4 1.5A3.8 3.8 0 0 1 17.5 18z"/><path d="M12 15.5v-5M10 12.5l2-2 2 2"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-del" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11v12H9l-6-6z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 7v10M21 12h0"/></symbol>
+  </defs>
+</svg>
+
+<div class="staff-corner" id="staffCorner" aria-hidden="true"></div>
+
+<main class="app" id="app">
+  <section class="frame" aria-label="Camera">
     <div class="stage" id="stage">
-      <video id="preview" playsinline muted autoplay aria-label="Live camera preview" hidden></video>
-      <p id="stageText">Press “Test camera &amp; microphone” to start</p>
+      <video class="live mirror" id="live" muted playsinline autoplay aria-label="Live camera preview" hidden></video>
+      <video class="playback" id="playVideo" controls playsinline hidden aria-label="Your recorded message"></video>
+      <img class="playback" id="playPhoto" alt="Your photo" hidden>
+      <div class="photo-frame" id="photoFrame" hidden></div>
+      <div class="brand-preview" id="brandPreview" hidden><svg width="16" height="16" style="color:var(--gold)"><use href="#i-heart"/></svg><b data-bind="names"></b><span data-bind="date"></span></div>
+
+      <div class="layer hero" data-show="welcome">
+        <svg aria-hidden="true" width="120" height="28" viewBox="0 0 120 28" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h40"/><path d="M76 14h40"/><path d="M60 22c-6-5-10-8-10-12a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 4-4 7-10 12z"/></svg>
+        <h2>Say hello,<br>leave a memory</h2>
+        <p>A video, a voice note or a photo</p>
+      </div>
+
+      <div class="layer audio-viz" id="audioViz" hidden>
+        <div class="ring" id="ring"><svg width="64" height="64" style="color:#F4DED6"><use href="#i-mic"/></svg></div>
+        <p>Audio only · <span id="micLabel">microphone</span></p>
+      </div>
+
+      <div class="layer" id="playAudioWrap" hidden>
+        <svg width="56" height="56" style="color:#F4DED6"><use href="#i-wave"/></svg>
+        <audio id="playAudio" controls style="width:100%;max-width:440px" aria-label="Your recorded message"></audio>
+      </div>
+
+      <div class="layer thanks-layer" data-show="thanks">
+        <div class="heart-dot"><svg width="30" height="30"><use href="#i-heart"/></svg></div>
+        <h2 id="thanksTitle">Thank you!</h2>
+        <div class="qr-card" id="copyQrCard">
+          <div class="qr" id="copyQr" role="img" aria-label="QR code to get your copy"></div>
+          <b>Scan for your copy</b>
+          <span>Opens on your phone · no app needed</span>
+        </div>
+      </div>
+
+      <p class="busy" id="busy" hidden>Connecting to your camera and microphone…</p>
+
+      <div class="layer error-layer" id="errorLayer" role="alert" hidden>
+        <div class="box">
+          <svg width="34" height="34" style="color:var(--accent)"><use href="#i-alert"/></svg>
+          <h3 id="errTitle"></h3>
+          <p id="errText"></p>
+          <button type="button" class="btn sm" id="retryBtn">Try again</button>
+        </div>
+      </div>
+
+      <div class="countdown" id="countdown" aria-live="assertive" hidden></div>
+      <div class="pill" id="introPill" hidden><svg width="18" height="18" style="color:var(--accent)"><use href="#i-speaker"/></svg>A message from the hosts</div>
+      <div class="pill" id="recPill" hidden><span class="rec-dot" aria-hidden="true"></span><span id="recPillText">REC 0:00</span></div>
+      <div class="warn-banner" id="warnBanner" role="status" hidden><svg width="20" height="20" style="color:var(--gold)"><use href="#i-clock"/></svg><span id="warnText"></span></div>
+      <div class="final-num" id="finalNum" aria-hidden="true" hidden></div>
+      <div class="flash" id="flash"></div>
     </div>
-    <div class="caption"><em>Device test</em><span id="today"></span></div>
-  </div>
+    <div class="caption"><span class="who" id="caption">A note for the hosts</span><span class="when" data-bind="date"></span></div>
+  </section>
 
-  <aside>
-    <div>
-      <p class="eyebrow">Guestbook · setup</p>
-      <h1>Camera &amp; microphone test</h1>
+  <section class="panel" aria-label="Controls">
+    <div class="panel-inner">
+      <div class="toprow">
+        <ol class="steps" id="steps" aria-label="Steps"><li><span>1</span>Choose</li><li><span>2</span>Record</li><li><span>3</span>Save</li></ol>
+        <div class="iconbtns" data-show="welcome setup photo">
+          <button type="button" class="iconbtn" id="bigBtn" aria-pressed="false" aria-label="Larger text and high contrast"><svg width="20" height="20"><use href="#i-text"/></svg></button>
+          <button type="button" class="iconbtn" id="voiceBtn" aria-pressed="false" aria-label="Voice guide"><svg width="20" height="20"><use href="#i-speaker"/></svg></button>
+        </div>
+      </div>
+
+      <div>
+        <p class="eyebrow"><span data-bind="eventName"></span> · Guestbook</p>
+        <h1 class="title" id="title">Leave us a <em>little</em> love note</h1>
+      </div>
+
+      <!-- Welcome -->
+      <div class="stack" data-show="welcome">
+        <button type="button" class="btn" id="chooseBoth"><svg width="22" height="22"><use href="#i-video"/></svg>Record video &amp; audio</button>
+        <div class="grid2">
+          <button type="button" class="btn secondary" id="chooseAudio"><svg width="20" height="20"><use href="#i-mic"/></svg>Audio only</button>
+          <button type="button" class="btn secondary" id="choosePhoto"><svg width="20" height="20"><use href="#i-camera"/></svg>Take a photo</button>
+        </div>
+        <div class="consent">
+          <p class="small" style="color:var(--ink);font-size:14px">Your message will be shared with the hosts.</p>
+          <label><input type="checkbox" id="consentShare">They may also show it at the event or post it online</label>
+        </div>
+        <div class="qrcard-start" id="remoteQrCard">
+          <div class="qr" id="remoteQr" role="img" aria-label="QR code to record from your own phone"></div>
+          <div><b style="display:block">Not at the event?</b><span class="small" style="font-size:14px">Scan to record from your own phone</span></div>
+        </div>
+      </div>
+
+      <!-- Setup (video & audio / audio only) -->
+      <div class="stack" data-show="setup">
+        <div class="seg" role="group" aria-label="Recording type">
+          <button type="button" data-mode-btn="both">Video &amp; audio</button>
+          <button type="button" data-mode-btn="audio">Audio only</button>
+          <button type="button" data-mode-btn="photo">Photo</button>
+        </div>
+        <label class="field" data-need="video">Camera<select id="camSel"></select></label>
+        <label class="field" data-need="audio">Microphone<select id="micSel"></select></label>
+        <div class="meter" data-need="audio" aria-hidden="true"></div>
+        <label class="field">Your name (optional)<input type="text" id="guestName" placeholder="e.g. Aunt Mei" autocomplete="off" maxlength="60"></label>
+        <button type="button" class="btn" id="startBtn" disabled><span aria-hidden="true" style="width:14px;height:14px;border-radius:50%;background:#fff"></span>Start recording</button>
+        <div class="toprow"><button type="button" class="btn ghost" data-act="reset">← Back</button><span class="small" id="limitHint"></span></div>
+      </div>
+
+      <!-- Photo -->
+      <div class="stack" data-show="photo">
+        <div class="seg" role="group" aria-label="Recording type">
+          <button type="button" data-mode-btn="both">Video &amp; audio</button>
+          <button type="button" data-mode-btn="audio">Audio only</button>
+          <button type="button" data-mode-btn="photo">Photo</button>
+        </div>
+        <p class="lead">We’ll count down from 3 and take your photo with the event frame.</p>
+        <label class="field">Camera<select id="camSel2"></select></label>
+        <div><span class="small" style="font-weight:600">Frame</span>
+          <div class="frames" style="margin-top:6px">
+            <button type="button" data-frame="classic"><span class="pv classic"></span>Classic</button>
+            <button type="button" data-frame="floral"><span class="pv floral"></span>Floral</button>
+            <button type="button" data-frame="none"><span class="pv"></span>None</button>
+          </div>
+        </div>
+        <label class="field">Your name (optional)<input type="text" id="guestName2" placeholder="e.g. Aunt Mei" autocomplete="off" maxlength="60"></label>
+        <div class="shutter-row">
+          <button type="button" class="shutter" id="shutterBtn" aria-label="Take photo" disabled><svg width="34" height="34"><use href="#i-camera"/></svg></button>
+          <div><b style="display:block">Tap to take photo</b><span class="small" style="font-size:14px">You can retake it before saving</span></div>
+        </div>
+        <button type="button" class="btn ghost" data-act="reset">← Back</button>
+      </div>
+
+      <!-- Host message -->
+      <div class="stack" data-show="intro">
+        <p class="lead" style="color:var(--ink);font-size:17px">Listen to a quick message from the hosts. Recording starts right after.</p>
+        <button type="button" class="btn secondary" id="skipIntro">Skip to countdown</button>
+        <button type="button" class="btn ghost" data-act="cancel">Cancel</button>
+      </div>
+
+      <!-- Countdown -->
+      <div class="stack" data-show="countdown">
+        <p style="margin:0;font-family:var(--serif);font-style:italic;font-weight:600;font-size:28px;line-height:1.2" id="countdownText">Get ready… look at the camera and smile.</p>
+        <button type="button" class="btn secondary" data-act="cancel">Cancel</button>
+      </div>
+
+      <!-- Recording -->
+      <div class="stack" data-show="recording">
+        <div class="timer-row"><span class="timer" id="timer">0:00</span><span class="small remaining" id="remaining" style="font-size:14px;font-weight:600"></span></div>
+        <div class="progress" id="progress"><div></div></div>
+        <div class="meter" data-need="audio" aria-hidden="true"></div>
+        <div class="prompt" id="promptCard">
+          <span class="eyebrow" style="letter-spacing:.14em">Need an idea?</span>
+          <p class="q" id="promptText"></p>
+          <div class="row"><div class="dots" id="promptDots" aria-hidden="true"></div><button type="button" class="btn secondary sm" id="nextPrompt"><svg width="18" height="18"><use href="#i-refresh"/></svg>Another question</button></div>
+        </div>
+        <button type="button" class="btn dark" id="stopBtn"><span aria-hidden="true" style="width:14px;height:14px;border-radius:3px;background:#E8695C"></span>Stop recording</button>
+      </div>
+
+      <!-- Review -->
+      <div class="stack" data-show="review">
+        <p class="lead" id="reviewText">Play it back. Happy with it? Add it to the guestbook.</p>
+        <button type="button" class="btn" id="saveBtn"><svg width="22" height="22"><use href="#i-check"/></svg>Save to guestbook</button>
+        <button type="button" class="btn secondary" id="againBtn"><svg width="18" height="18"><use href="#i-refresh"/></svg><span id="againLabel">Record again</span></button>
+        <button type="button" class="btn ghost" data-act="reset">Discard and start over</button>
+        <span class="small" id="reviewMeta"></span>
+      </div>
+
+      <!-- Thanks -->
+      <div class="stack" data-show="thanks">
+        <div class="status-card" id="uploadCard"><div class="ic"><svg width="22" height="22" id="uploadIcon"><use href="#i-up"/></svg></div><div><b id="uploadTitle">Saving…</b><span id="uploadText"></span></div></div>
+        <p class="small" style="font-size:14px">Point your phone camera at the code to watch or download your message. The link works for 24 hours.</p>
+        <button type="button" class="btn" data-act="reset">Done</button>
+        <div class="ring-text"><svg width="20" height="20" style="color:var(--accent)"><use href="#i-clock"/></svg><span id="backIn"></span></div>
+      </div>
     </div>
-    <p class="lead">The full guestbook is coming soon. Use this page to approve camera and microphone access once on this device, so guests are never asked.</p>
-    <button class="primary" id="startBtn" type="button">Test camera &amp; microphone</button>
-
-    <label>Camera <select id="camSel" disabled><option>Not started</option></select></label>
-    <label>Microphone <select id="micSel" disabled><option>Not started</option></select></label>
-    <div class="meter" id="meter" aria-hidden="true"></div>
-
-    <ul aria-label="Results">
-      <li><span class="dot" id="d-secure">·</span><div><b>Secure page</b><small id="t-secure">Checking…</small></div></li>
-      <li><span class="dot" id="d-perm">·</span><div><b>Permission</b><small id="t-perm">Not tested yet</small></div></li>
-      <li><span class="dot" id="d-cam">·</span><div><b>Camera</b><small id="t-cam">Not tested yet</small></div></li>
-      <li><span class="dot" id="d-mic">·</span><div><b>Microphone</b><small id="t-mic">Not tested yet — speak after starting</small></div></li>
-      <li><span class="dot" id="d-rec">·</span><div><b>Recording support</b><small id="t-rec">Checking…</small></div></li>
-    </ul>
-    <p class="note">To stop the browser asking again: in Chrome or Edge, click the icon left of the address and set Camera and Microphone to Allow. On iPad or iPhone, go to Settings → Apps → Safari → Camera / Microphone → Allow.</p>
-  </aside>
+  </section>
 </main>
 
-<script>
-(() => {
-  const $ = (id) => document.getElementById(id);
-  const set = (k, state, text) => { const d = $('d-' + k); d.className = 'dot ' + (state || ''); d.textContent = state === 'ok' ? '✓' : state === 'warn' ? '!' : '·'; $('t-' + k).textContent = text; };
-  $('today').textContent = new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
-  const meter = $('meter');
-  for (let i = 0; i < 20; i++) meter.appendChild(document.createElement('span'));
-  const bars = [...meter.children];
+<!-- Staff PIN -->
+<div class="overlay" id="pinLayer" hidden>
+  <div class="pin-card" role="dialog" aria-modal="true" aria-label="Staff PIN">
+    <div class="heart-dot" style="background:var(--blush);color:var(--accent);width:56px;height:56px"><svg width="26" height="26"><use href="#i-lock"/></svg></div>
+    <h2>Staff only</h2>
+    <p class="small" style="font-size:15px;margin-top:-6px">Enter the 4-digit PIN</p>
+    <div class="pin-dots" id="pinDots"><i></i><i></i><i></i><i></i></div>
+    <div class="keypad" id="keypad">
+      <button type="button">1</button><button type="button">2</button><button type="button">3</button>
+      <button type="button">4</button><button type="button">5</button><button type="button">6</button>
+      <button type="button">7</button><button type="button">8</button><button type="button">9</button>
+      <button type="button" class="plain" data-key="cancel">Cancel</button><button type="button">0</button>
+      <button type="button" class="plain" data-key="del" aria-label="Delete digit"><svg width="26" height="26" style="color:var(--ink)"><use href="#i-del"/></svg></button>
+    </div>
+  </div>
+</div>
 
-  set('secure', window.isSecureContext ? 'ok' : 'warn', window.isSecureContext ? 'This page is on https://, so recording is allowed' : 'Not a secure page — open it over https://');
-  const types = ['video/webm;codecs=vp9,opus', 'video/webm', 'video/mp4'];
-  const ok = window.MediaRecorder && types.find((t) => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t));
-  set('rec', ok ? 'ok' : 'warn', ok ? 'This browser can record (' + ok.split(';')[0] + ')' : 'This browser cannot record video. Use current Chrome, Edge, Safari or Firefox.');
+<!-- Staff panel -->
+<div class="overlay full" id="staffLayer" hidden>
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow"><span data-bind="eventName"></span> · Guestbook</p><h1 class="title">Staff panel</h1></div>
+      <div class="actions">
+        <button type="button" class="btn secondary sm" id="openCheck">Device check</button>
+        <a class="btn secondary sm" href="gallery.html" target="_blank" rel="noopener">Host gallery</a>
+        <button type="button" class="btn sm" id="closeStaff">Back to guestbook</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="ic"><svg width="22" height="22"><use href="#i-heart"/></svg></div><div><b id="statToday">0</b><span>messages on this device today</span></div></div>
+      <div class="stat" id="statQueueBox"><div class="ic"><svg width="22" height="22"><use href="#i-up"/></svg></div><div><b id="statQueue">0</b><span id="statQueueLabel">waiting to upload</span></div></div>
+      <div class="stat" id="statStoreBox"><div class="ic"><svg width="22" height="22"><use href="#i-cloud"/></svg></div><div><b id="statStore">–</b><span id="statStoreLabel">free on this device</span></div></div>
+      <div class="stat"><div class="ic"><svg width="22" height="22"><use href="#i-wifioff"/></svg></div><div><b id="statNet">–</b><span>internet connection</span></div></div>
+    </div>
+    <div class="notice warn" id="lowStorage" hidden><svg width="18" height="18"><use href="#i-alert"/></svg>Storage is running low on this device. Switch to Saver quality and make sure waiting messages upload.</div>
+    <div class="notice dark"><svg width="18" height="18" style="color:var(--gold)"><use href="#i-clock"/></svg>Uploaded messages are deleted automatically 24 hours after upload. Download them from the host gallery to keep them.</div>
 
-  let stream = null, ctx = null, raf = 0, heard = false;
+    <div class="cards">
+      <div class="card">
+        <h2>Event &amp; branding</h2>
+        <p class="small">These change this device only. To change them for every device, including guests’ phones, edit <b>config.js</b> on GitHub.</p>
+        <label class="field">Event name<input type="text" data-set="eventName"></label>
+        <div class="grid2"><label class="field">Names on the overlay<input type="text" data-set="names"></label><label class="field">Date<input type="text" data-set="eventDate" placeholder="Today"></label></div>
+        <div><span class="small" style="font-weight:600">Accent colour</span><div class="swatches" id="swatches" style="margin-top:8px"></div></div>
+        <button type="button" class="toggle" data-toggle="overlay"><span>Branded overlay on videos &amp; photos</span><span class="track"></span></button>
+      </div>
+      <div class="card">
+        <h2>Recording</h2>
+        <div><span class="small" style="font-weight:600">Time limit</span><div class="seg" data-seg="maxSeconds" style="margin-top:6px"></div></div>
+        <div><span class="small" style="font-weight:600">Reminder before the end</span><div class="seg" data-seg="remindAt" style="margin-top:6px"></div></div>
+        <div><span class="small" style="font-weight:600">Video quality</span><div class="seg" data-seg="quality" style="margin-top:6px"></div></div>
+        <button type="button" class="toggle" data-toggle="sounds"><span>Countdown sounds</span><span class="track"></span></button>
+        <button type="button" class="toggle" data-toggle="hostMessages"><span>Opening &amp; closing host messages</span><span class="track"></span></button>
+        <button type="button" class="toggle" data-toggle="voiceGuide"><span>Voice guide on by default</span><span class="track"></span></button>
+      </div>
+      <div class="card">
+        <h2>Prompt cards</h2>
+        <button type="button" class="toggle" data-toggle="prompts"><span>Show prompt cards while recording</span><span class="track"></span></button>
+        <label class="field">Questions, one per line<textarea data-set="promptsText"></textarea></label>
+      </div>
+      <div class="card">
+        <h2>Kiosk &amp; security</h2>
+        <button type="button" class="toggle" data-toggle="kiosk"><span>Kiosk mode<small>Full screen, camera kept on, back to start when idle</small></span><span class="track"></span></button>
+        <div><span class="small" style="font-weight:600">Back to the start after no taps for</span><div class="seg" data-seg="idleSeconds" style="margin-top:6px"></div></div>
+        <div><span class="small" style="font-weight:600">Thank-you screen stays up for</span><div class="seg" data-seg="thanksSeconds" style="margin-top:6px"></div></div>
+        <div class="grid2" style="align-items:end"><label class="field">New staff PIN (4 digits)<input type="password" inputmode="numeric" maxlength="4" id="newPin" autocomplete="off"></label><button type="button" class="btn secondary sm" id="savePin">Change PIN</button></div>
+        <p class="small" id="pinMsg"></p>
+      </div>
+      <div class="card">
+        <h2>Storage &amp; upload</h2>
+        <p class="small">Every message is saved on this device first, then uploaded. If the Wi-Fi drops, it keeps trying.</p>
+        <ul class="queue" id="queueList"></ul>
+        <button type="button" class="btn secondary sm" id="uploadNow"><svg width="18" height="18"><use href="#i-up"/></svg>Upload waiting messages now</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  async function listDevices() {
-    const all = await navigator.mediaDevices.enumerateDevices();
-    const fill = (sel, kind, label, current) => {
-      sel.innerHTML = '';
-      all.filter((d) => d.kind === kind).forEach((d, i) => {
-        const o = document.createElement('option'); o.value = d.deviceId; o.textContent = d.label || (label + ' ' + (i + 1));
-        if (d.deviceId === current) o.selected = true; sel.appendChild(o);
-      });
-      sel.disabled = !sel.options.length;
-    };
-    const vt = stream && stream.getVideoTracks()[0], at = stream && stream.getAudioTracks()[0];
-    fill($('camSel'), 'videoinput', 'Camera', vt && vt.getSettings().deviceId);
-    fill($('micSel'), 'audioinput', 'Microphone', at && at.getSettings().deviceId);
-  }
+<!-- Device check -->
+<div class="overlay full" id="checkLayer" hidden>
+  <div class="wrap" style="max-width:760px">
+    <div class="head"><div><p class="eyebrow">Staff panel</p><h1 class="title">Device check</h1></div>
+      <div class="actions"><button type="button" class="btn secondary sm" id="runCheck"><svg width="18" height="18"><use href="#i-refresh"/></svg>Run check again</button><button type="button" class="btn sm" id="closeCheck">Done</button></div></div>
+    <div class="notice ok" id="checkSummary" role="status">Checking…</div>
+    <ul class="checks">
+      <li id="ck-camera"><div class="ic">·</div><div><b>Camera</b><small>Checking…</small></div></li>
+      <li id="ck-mic"><div class="ic">·</div><div><b>Microphone</b><small>Say something…</small></div><div class="meter" data-need="audio" style="width:120px" aria-hidden="true"></div></li>
+      <li id="ck-speaker"><div class="ic">·</div><div><b>Speaker</b><small>Play the test sound and check you can hear it</small></div><button type="button" class="btn secondary sm" id="playTest">Play sound</button><button type="button" class="btn secondary sm" id="heardYes">I heard it</button></li>
+      <li id="ck-storage"><div class="ic">·</div><div><b>Storage</b><small>Checking…</small></div></li>
+      <li id="ck-net"><div class="ic">·</div><div><b>Internet</b><small>Checking…</small></div></li>
+      <li id="ck-upload"><div class="ic">·</div><div><b>Upload to the hosts</b><small>Sends a tiny test image (deleted after 24 hours)</small></div><button type="button" class="btn secondary sm" id="testUpload">Test upload</button></li>
+      <li id="ck-rec"><div class="ic">·</div><div><b>Recording support</b><small>Checking…</small></div></li>
+    </ul>
+  </div>
+</div>
 
-  function stop() {
-    cancelAnimationFrame(raf);
-    if (ctx) ctx.close().catch(() => {});
-    if (stream) stream.getTracks().forEach((t) => t.stop());
-    stream = null; ctx = null;
-  }
+<audio id="clip-openV" src="assets/audio/opening_video_message.mp3" preload="auto"></audio>
+<audio id="clip-openA" src="assets/audio/opening_audio_message.mp3" preload="auto"></audio>
+<audio id="clip-closeV" src="assets/audio/closing_video_message.mp3" preload="auto"></audio>
+<audio id="clip-closeA" src="assets/audio/closing_audio_message.mp3" preload="auto"></audio>
 
-  async function start(camId, micId) {
-    stop();
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { set('perm', 'warn', 'Camera access is not available in this browser'); return; }
-    $('stageText').textContent = 'Connecting… if your browser asks, choose Allow';
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: camId ? { deviceId: { exact: camId } } : { width: { ideal: 1920 }, height: { ideal: 1080 } },
-        audio: micId ? { deviceId: { exact: micId }, echoCancellation: true, noiseSuppression: true } : { echoCancellation: true, noiseSuppression: true },
-      });
-    } catch (e) {
-      const n = e && e.name;
-      $('stageText').textContent = 'Could not start the camera';
-      set('perm', 'warn', n === 'NotAllowedError' ? 'Blocked. Allow the camera and microphone in the site settings, then try again.' : n === 'NotFoundError' ? 'No camera or microphone found. Plug one in and try again.' : n === 'NotReadableError' ? 'Another app is using the camera or microphone.' : 'Error: ' + (n || e));
-      return;
-    }
-    set('perm', 'ok', 'Allowed for this site');
-    const v = $('preview'); v.srcObject = stream; v.hidden = false; v.play().catch(() => {});
-    $('stageText').hidden = true;
-    const vt = stream.getVideoTracks()[0]; const s = vt.getSettings();
-    set('cam', 'ok', (vt.label || 'Camera') + (s.width ? ' · ' + s.width + '×' + s.height : ''));
-    const at = stream.getAudioTracks()[0];
-    set('mic', '', (at.label || 'Microphone') + ' · say something to test');
-    heard = false;
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (AC) {
-      ctx = new AC();
-      const an = ctx.createAnalyser(); an.fftSize = 1024; ctx.createMediaStreamSource(stream).connect(an);
-      const buf = new Uint8Array(an.fftSize); let lvl = 0;
-      const tick = () => {
-        an.getByteTimeDomainData(buf);
-        let sum = 0; for (let i = 0; i < buf.length; i++) { const x = (buf[i] - 128) / 128; sum += x * x; }
-        lvl = Math.max(Math.min(1, Math.sqrt(sum / buf.length) * 4), lvl * 0.86);
-        const lit = Math.round(lvl * 20);
-        bars.forEach((b, i) => { b.style.background = i < lit ? (i >= 16 ? '#D9822B' : '#A8473C') : '#EADBD1'; });
-        if (!heard && lvl > 0.25) { heard = true; set('mic', 'ok', (at.label || 'Microphone') + ' · picking up sound'); }
-        raf = requestAnimationFrame(tick);
-      };
-      tick();
-    }
-    await listDevices();
-    $('startBtn').textContent = 'Test again';
-  }
-
-  $('startBtn').addEventListener('click', () => start());
-  $('camSel').addEventListener('change', (e) => start(e.target.value, $('micSel').value));
-  $('micSel').addEventListener('change', (e) => start($('camSel').value, e.target.value));
-  if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener('devicechange', () => { if (stream) listDevices(); });
-})();
-</script>
+<script src="app.js"></script>
 </body>
 </html>

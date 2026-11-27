@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Your guestbook message</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
+</head>
+<body class="page">
+<main class="copy-wrap">
+  <div>
+    <p class="eyebrow"><span id="eventName"></span> · Guestbook</p>
+    <h1 class="title" style="font-size:34px">Your message for <em id="names"></em></h1>
+  </div>
+  <section class="frame">
+    <div class="stage" id="stage">
+      <div class="layer" id="waiting" style="background:var(--blush);color:var(--ink)">
+        <p style="margin:0;font-family:var(--serif);font-style:italic;font-weight:600;font-size:28px;line-height:1.1" id="waitTitle">Getting your copy…</p>
+        <p class="small" id="waitText" style="font-size:14px"></p>
+      </div>
+    </div>
+    <div class="caption" style="height:44px"><span class="who" id="caption" style="font-size:20px">A note for the hosts</span><span class="when" id="date"></span></div>
+  </section>
+  <div class="stack">
+    <button type="button" class="btn" id="dl" disabled>Download</button>
+    <span class="small" id="meta" style="text-align:center"></span>
+  </div>
+  <div class="status-card"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M10 2h4"/></svg></div><div><b>Private · deleted after 24 hours</b><span>Only people with this link can see it. Download it now to keep it — it’s removed automatically 24 hours after it was uploaded.</span></div></div>
+</main>
+<script>
+(() => {
+  const C = window.GUESTBOOK_CONFIG, p = new URLSearchParams(location.search);
+  const $ = (s) => document.querySelector(s);
+  document.documentElement.style.setProperty('--accent', C.accent);
+  $('#eventName').textContent = C.eventName; $('#names').textContent = C.names;
+  $('#date').textContent = C.eventDate || '';
+  const id = (p.get('i') || '').replace(/[^\w-]/g, ''), rt = p.get('r') === 'image' ? 'image' : 'video', ext = (p.get('f') || '').replace(/[^\w]/g, ''), kind = p.get('k') || (rt === 'image' ? 'photo' : 'video'), name = (p.get('n') || '').slice(0, 60);
+  if (name) $('#caption').textContent = 'From ' + name;
+  if (!id || !ext) { $('#waitTitle').textContent = 'This link is incomplete'; $('#waitText').textContent = 'Scan the QR code on the guestbook screen again.'; return; }
+  const url = 'https://res.cloudinary.com/' + encodeURIComponent(C.cloudName) + '/' + rt + '/upload/' + id + '.' + ext;
+  const label = kind === 'photo' ? 'photo' : kind === 'audio' ? 'voice note' : 'video';
+  $('#dl').textContent = 'Download ' + label;
+  let tries = 0, blob = null;
+  async function check() {
+    tries++;
+    try {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (r.ok) { blob = await r.blob(); return showMedia(); }
+    } catch (e) {}
+    $('#waitTitle').textContent = tries < 3 ? 'Still uploading…' : 'Not available yet';
+    $('#waitText').textContent = tries < 3 ? 'Your message is on its way from the guestbook. This page updates by itself.'
+      : 'It may still be waiting on the guestbook for Wi-Fi — keep this page open or come back later. Messages are deleted 24 hours after upload.';
+    setTimeout(check, tries < 20 ? 10000 : 60000);
+  }
+  function showMedia() {
+    const stage = $('#stage'); stage.innerHTML = '';
+    const src = URL.createObjectURL(blob);
+    let el;
+    if (kind === 'photo') { el = document.createElement('img'); el.alt = 'Your photo'; el.className = 'playback'; el.style.objectFit = 'contain'; }
+    else if (kind === 'audio') { el = document.createElement('audio'); el.controls = true; el.style.width = '90%'; stage.style.background = 'var(--blush)'; }
+    else { el = document.createElement('video'); el.controls = true; el.playsInline = true; el.className = 'playback'; }
+    el.src = src; stage.appendChild(el);
+    $('#dl').disabled = false;
+    $('#meta').textContent = ext.toUpperCase() + ' · ' + (blob.size > 1048576 ? (blob.size / 1048576).toFixed(1) + ' MB' : Math.round(blob.size / 1024) + ' KB');
+    $('#dl').onclick = async () => {
+      const fname = 'guestbook-' + (name || 'message').replace(/[^\w-]+/g, '-') + '.' + ext;
+      const file = new File([blob], fname, { type: blob.type });
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && /iPhone|iPad|Android/i.test(navigator.userAgent)) {
+        try { await navigator.share({ files: [file], title: 'My guestbook message' }); return; } catch (e) { if (e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a'); a.href = src; a.download = fname; document.body.appendChild(a); a.click(); a.remove();
+    };
+  }
+  check();
+})();
+</script>
+</body>
+</html>

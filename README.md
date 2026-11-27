@@ -1,38 +1,48 @@
 # Audio & video guestbook
 
-A browser-based guestbook for events. Guests record a video & audio message, an audio-only message or a photo on a kiosk, tablet or their own phone.
+A browser-based guestbook for events. Guests record a **video & audio message**, an **audio-only message** or a **photo** on a kiosk, tablet or laptop — or on their own phone by scanning a QR code.
 
-- **Hosting:** GitHub Pages (this repository).
-- **Storage:** Cloudinary. Every upload is tagged `guestbook` and **deleted automatically 24 hours after upload** by the hourly job in `.github/workflows/cloudinary-cleanup.yml`.
+- **Guestbook:** `https://ruminoxq.github.io/guestbook/`
+- **Remote guests (own phone):** `https://ruminoxq.github.io/guestbook/?remote=1` (the QR code on the start screen)
+- **Host gallery:** `https://ruminoxq.github.io/guestbook/gallery.html`
+- **Storage:** Cloudinary (`whgs8x00`, preset `guestbook_kiosk`). Every upload is **deleted automatically 24 hours after upload** by `.github/workflows/cloudinary-cleanup.yml`.
 
-> Status: the full guestbook is being built. `index.html` is currently a camera & microphone test page.
+## Before the event
 
-## 1. Turn on GitHub Pages
+1. Edit **`config.js`** on GitHub: event name, names for the overlay, date, accent colour and prompt questions. These apply to every device, including guests’ phones.
+2. On each guestbook device, open the guestbook, tap **Record video & audio** once and choose **Allow** for the camera and microphone. In Chrome/Edge also set Camera and Microphone to **Allow** in the site settings; on iPad, Settings → Apps → Safari → Camera / Microphone → Allow.
+3. Open the **Staff panel**: press and hold the **top-left corner** of the screen for 3 seconds, then enter the PIN (default `2580` — change it straight away under Kiosk & security; each device keeps its own PIN).
+4. In the Staff panel, run the **Device check** (camera, microphone, speaker, storage, internet, test upload).
 
-Settings → Pages → Build and deployment → Source: **Deploy from a branch** → Branch: **main** / **(root)** → Save.
+## During the event
 
-The site appears at `https://<your-username>.github.io/<repository-name>/` after a minute or two.
+- Messages are saved on the device first and uploaded in the background. If the Wi-Fi drops, they wait and upload when it’s back. The Staff panel shows how many are waiting and lets you save any file directly.
+- After saving, guests get a QR code to watch or download their own copy for 24 hours.
 
-## 2. Connect Cloudinary (for the 24-hour clean-up)
+## After the event
 
-Settings → Secrets and variables → Actions → **New repository secret**, and add:
+Open the **host gallery**, enter the gallery code (the part after `guestbook-` in the `GUESTBOOK_TAG` repository variable) and use **Download all (.zip)** **within 24 hours**.
 
-| Secret | Where to find it in Cloudinary |
-| --- | --- |
-| `CLOUDINARY_CLOUD_NAME` | Dashboard → Cloud name |
-| `CLOUDINARY_API_KEY` | Settings → API Keys |
-| `CLOUDINARY_API_SECRET` | Settings → API Keys (click to reveal) |
+## Staff settings (per device)
 
-Never put the API secret in any web page or commit it to this repository.
+Time limit, time-left reminder, video quality (Saver / Standard / High), countdown sounds, host messages, voice guide, prompt cards, branded overlay, kiosk mode, idle timeout, thank-you time and PIN. Settings are stored in that device’s browser.
 
-Optional repository **variables** (same page, Variables tab): `GUESTBOOK_TAG` (default `guestbook`) and `MAX_AGE_HOURS` (default `24`).
+## 24-hour clean-up
 
-## 3. Test the clean-up
+Repository secrets `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` and variable `GUESTBOOK_TAG` are set. The job runs hourly; files are deleted 24–25 hours after upload. To test: Actions → **Delete guestbook files after 24 hours** → Run workflow → tick **Only list what would be deleted**.
 
-Actions → **Delete guestbook files after 24 hours** → Run workflow → tick **Only list what would be deleted** → Run. The log lists any files older than 24 hours without deleting them. After that it runs by itself every hour.
-
-## Notes
-
-- Files are deleted between 24 and 25 hours after upload, because the job runs once an hour. GitHub may start scheduled runs a few minutes late at busy times.
 - GitHub pauses scheduled jobs in a repository with no activity for 60 days. Re-enable it from the Actions tab before your next event.
-- If Cloudinary backups are turned on in your account, backed-up copies are kept separately. Turn backups off (Settings → Upload → Backups) if nothing should remain after 24 hours.
+- Never put the API secret in any web page or commit it to this repository.
+
+## Files
+
+| File | What it is |
+| --- | --- |
+| `index.html`, `app.js` | The guestbook (kiosk and remote) |
+| `gallery.html`, `gallery.js` | Host gallery |
+| `copy.html` | Page guests open from their QR code |
+| `config.js` | Shared event settings |
+| `styles.css` | Shared styles |
+| `assets/audio/` | Opening and closing host messages |
+| `vendor/` | QR code (qrcode-generator, MIT) and zip (JSZip, MIT) libraries |
+| `scripts/cleanup.mjs` | The 24-hour clean-up job |
