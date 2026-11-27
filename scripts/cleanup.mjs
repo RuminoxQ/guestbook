@@ -3,10 +3,12 @@
 // Needs repository secrets: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.
 // Optional repository variables: GUESTBOOK_TAG (default "guestbook"), MAX_AGE_HOURS (default 24), DRY_RUN ("true" to only list).
 
-const cloud = process.env.CLOUDINARY_CLOUD_NAME;
-const key = process.env.CLOUDINARY_API_KEY;
-const secret = process.env.CLOUDINARY_API_SECRET;
-const tag = process.env.GUESTBOOK_TAG || 'guestbook';
+// Trim stray spaces or line breaks picked up when pasting secrets.
+const clean = (v) => String(v || '').replace(/\s+/g, '');
+const cloud = clean(process.env.CLOUDINARY_CLOUD_NAME);
+const key = clean(process.env.CLOUDINARY_API_KEY);
+const secret = clean(process.env.CLOUDINARY_API_SECRET);
+const tag = clean(process.env.GUESTBOOK_TAG) || 'guestbook';
 const maxAgeHours = Number(process.env.MAX_AGE_HOURS || 24);
 const dryRun = String(process.env.DRY_RUN || '').toLowerCase() === 'true';
 
@@ -14,6 +16,11 @@ if (!cloud || !key || !secret) {
   console.log('Cloudinary secrets are not set yet, so there is nothing to clean up. Add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET in Settings > Secrets and variables > Actions.');
   process.exit(0);
 }
+
+// Describe the values without revealing them, to help spot a pasted-in-the-wrong-box mistake.
+const shape = (v) => `${v.length} characters, ${/^\d+$/.test(v) ? 'digits only' : /^[a-z0-9_-]+$/i.test(v) ? 'letters/digits' : 'contains other characters'}`;
+console.log(`Cloud name: ${shape(cloud)} · API key: ${shape(key)} (should be ~15 digits only) · API secret: ${shape(secret)} (should be ~27 letters/digits)`);
+if (!/^\d+$/.test(key)) console.log('Warning: the API key should be digits only. Check that CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET are not swapped.');
 
 const api = `https://api.cloudinary.com/v1_1/${encodeURIComponent(cloud)}`;
 const auth = 'Basic ' + Buffer.from(`${key}:${secret}`).toString('base64');
